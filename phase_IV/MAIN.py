@@ -158,8 +158,8 @@ def findAttendance(im,imGrid,days,noOfStudents):
 ##        img2=img.copy()
 ##        show('Image',img2)
         cv2.rectangle(rects, (r[0], r[1]), (r[0] + r[2], r[1] + r[3]), 127, 5)
-        show('Image',rects)
-        cv2.waitKey(0)
+##        show('Image',rects)
+##        cv2.waitKey(0)
         # show('Image', rects);
         # show('ROI', roi );
         if boundFlag == True:
@@ -335,8 +335,8 @@ if __name__ == '__main__':
         print float(studentAttend[i]*100/days),
         print '%'
         data = {'x1':studentDetails[i],'x2':studentAttend[i]}
-        r = requests.post('http://ssuhrid.com/test.php', params=data)
-        print r.status_code
+        requests.post('http://ssuhrid.com/test.php', params=data)
+##        print r.status_code
 
 
     show('Image',img)
