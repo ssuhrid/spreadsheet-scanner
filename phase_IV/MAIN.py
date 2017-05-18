@@ -74,11 +74,11 @@ def four_point_transform(image, pts):
 def findRegion(im):
     gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY);
     blur = cv2.GaussianBlur(gray, (1, 1), 0);
-    show('blur', blur)
-    cv2.waitKey(0)
+##    show('blur', blur)
+##    cv2.waitKey(0)
     edges = cv2.Canny(blur, 100, 20)
-    show('edges', edges)
-    cv2.waitKey(0)
+##    show('edges', edges)
+##    cv2.waitKey(0)
 
     cnts, ret = cv2.findContours(edges.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
@@ -177,8 +177,8 @@ def findAttendance(im,imGrid,days,noOfStudents):
             text = text.lstrip();
             text = text.rstrip();
             studentDetails.append(text);
-            print text,
-            print ': ',
+##            print text,
+##            print ': ',
         else:
             if checkPresent(roi):
                 studentAttend[i/days]+=1
@@ -210,8 +210,8 @@ def findGrid(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY);
     h, w = gray.shape;
     ret, temp = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY);
-    show('Image', gray)
-    cv2.waitKey(0);
+##    show('Image', gray)
+##    cv2.waitKey(0);
 
     # kernel=np.ones((1,1),dtype=np.uint8);
     # temp=cv2.erode(temp,kernel,iterations=1);
@@ -227,8 +227,8 @@ def findGrid(img):
 
     imGrid = abs(255 - imGrid);
 
-    show('Image',imGrid)
-    cv2.waitKey(0);
+##    show('Image',imGrid)
+##    cv2.waitKey(0);
 
     kernel = np.ones((25, 25), dtype=np.uint8);
     imGrid = cv2.erode(imGrid, kernel, iterations=1);
@@ -249,7 +249,7 @@ def checkPresent(roi):
     r = cv2.dilate(r, kernel, iterations=1);
     avg=float(sum(sum(r)))/r.size
 
-    print avg
+##    print avg
     if avg<0.5:
 ##        print 'P'
         return True
@@ -297,8 +297,8 @@ def simplify(im,imGrid):
     print pts
     pts=([pts[0],pts[1]],[pts[2],pts[3]],[pts[4],pts[5]],[pts[6],pts[7]])
 
-    show('Image', imGrid)
-    cv2.waitKey(0);
+##    show('Image', imGrid)
+##    cv2.waitKey(0);
 
     imGrid = four_point_transform(imGrid.copy(), pts)
     im = four_point_transform(im.copy(), pts)
@@ -314,15 +314,15 @@ if __name__ == '__main__':
 
     days=7;noOfStudents=10;
     img = cv2.imread('images//cam01.JPG');
-    show('Image', img)
-    cv2.waitKey(0);
+##    show('Image', img)
+##    cv2.waitKey(0);
 
     imGrid=findGrid(img)
 
     img,imGrid = simplify(img,imGrid)
     
-    show('Image', img)
-    cv2.waitKey(0);
+##    show('Image', img)
+##    cv2.waitKey(0);
 
     days=days+2;
 
@@ -331,13 +331,19 @@ if __name__ == '__main__':
 ##
     days-=2
     for i in range(0,len(studentDetails)):
-        print studentDetails[i],
-        print float(studentAttend[i]*100/days),
-        print '%'
-        data = {'x1':studentDetails[i],'x2':studentAttend[i]}
-        requests.post('http://ssuhrid.com/test.php', params=data)
-##        print r.status_code
+##        print studentDetails[i],
+##        print float(studentAttend[i]*100/days),
+##        print '%'
 
+        split = studentDetails[i].split(' ', 1)
+        enroll = int(split[0])
+        name = split[1]
+        print enroll,
+        print name,
+        print studentAttend[i],
+        data = {'enroll':enroll,'name':name,'attend':studentAttend[i]}
+        r = requests.post('http://ssuhrid.com/updateDB.php', params=data)
+        print r.status_code
 
     show('Image',img)
     cv2.waitKey(0)
