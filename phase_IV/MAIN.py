@@ -22,16 +22,6 @@ def show(str, im):
         if x < 1.0:
             im = cv2.resize(im, (0, 0), fx=x, fy=x)
     cv2.imshow(str, im);
-def change(a):
-    global thresh
-    x = cv2.getTrackbarPos('Thresh', 'Image')
-    ##    x=(x*2)+1;
-    ##    blur = cv2.GaussianBlur(gray, (x, x), 0);
-    lower_black = np.array([0, 0, 0])
-    upper_black = np.array([x, x, x])
-    thresh = cv2.inRange(img2, lower_black, upper_black)
-    show('Image', thresh)
-    pass
 def order_points(pts):
     pts = np.array(pts, dtype="float32")
     ##    print pts
@@ -202,7 +192,8 @@ def getLargestContour(im):
     #             temp[i][j] = 255;
     #         else:
     #             temp[i][j] = 0;
-    im = cv2.inRange(im, 127, 127);
+    im = cv2.inRange(im, np.array(cv2.cv.Scalar(127)),
+                     np.array(cv2.cv.Scalar(127)));
     return im;
 # engine=pyttsx.init()
 
@@ -238,12 +229,13 @@ def findGrid(img):
     return imGrid
 
 def checkPresent(roi):
-    white=cv2.inRange(roi,(200,200,200),(255,255,255))
+    white=cv2.inRange(roi,np.array(cv2.cv.Scalar(200,200,200)),
+                      np.array(cv2.cv.Scalar(255,255,255)))
     white = 255 - white
     white = cv2.divide(white,255*np.ones((white.shape),dtype=np.uint8))
     roi=cv2.multiply(roi.copy(),cv2.merge([white,white,white]))
     b,g,r=cv2.split(roi)
-    r=cv2.inRange(r,200,255)
+    r=cv2.inRange(r,np.array(cv2.cv.Scalar(200)),np.array(cv2.cv.Scalar(255)))
     kernel = np.ones((5, 5), dtype=np.uint8);
     r = cv2.erode(r, kernel, iterations=1);
     r = cv2.dilate(r, kernel, iterations=1);
@@ -313,7 +305,7 @@ if __name__ == '__main__':
     cv2.destroyAllWindows()
 
     days=7;noOfStudents=10;
-    img = cv2.imread('images//cam01.JPG');
+    img = cv2.imread('images//cam01.jpg');
 ##    show('Image', img)
 ##    cv2.waitKey(0);
 
@@ -345,8 +337,9 @@ if __name__ == '__main__':
         r = requests.post('http://ssuhrid.com/updateDB.php', params=data)
         print r.status_code
 
-    show('Image',img)
-    cv2.waitKey(0)
+##    show('Image',img)
+##    cv2.waitKey(0)
+    print 'Done'
     cv2.destroyAllWindows()
     ##exit(0);
 
