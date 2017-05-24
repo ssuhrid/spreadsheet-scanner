@@ -3,10 +3,10 @@ import numpy as np
 from fpt import four_point_transform
 import PyTesser.pytesser as pyt
 import Image
-import pyttsx
+##import pyttsx
 
-engine=pyttsx.init()
-img=cv2.imread('Samples//id1.jpg');
+##engine=pyttsx.init()
+img=cv2.imread('Samples//id2.jpg');
 
 # img=cv2.resize(img.copy(),(0,0),fx=0.4,fy=0.4)
 orig=img.copy()
@@ -16,7 +16,7 @@ gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY);
 
 blur=cv2.GaussianBlur(gray,(21,21),0);
 
-blur=cv2.resize(blur.copy(),(0,0),fx=0.2,fy=0.2)
+##blur=cv2.resize(blur.copy(),(0,0),fx=0.2,fy=0.2)
 cv2.imshow('blur',blur)
 edges=cv2.Canny(blur,100,20)
 cv2.imshow('edges',edges)
@@ -29,19 +29,19 @@ cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:5]
 
 screenCnt='False'
 # loop over the contours
-for c in cnts:
-    # approximate the contour
-    peri = cv2.arcLength(c, True)
-##    print peri
-    approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+##for c in cnts:
+##    # approximate the contour
+##    peri = cv2.arcLength(c, True)
+####    print peri
+##    approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+####    print len(approx)
+##    # if our approximated contour has four points, then we
+##    # can assume that we have found our screen
 ##    print len(approx)
-    # if our approximated contour has four points, then we
-    # can assume that we have found our screen
-    print len(approx)
-    if len(approx) == 4:
-        screenCnt = approx
-        break
-##print screenCnt
+##    if len(approx) == 4:
+##        screenCnt = approx
+##        break
+####print screenCnt
 
 if screenCnt != 'False':
     pts=screenCnt.flatten();
@@ -96,8 +96,8 @@ else:
     text = pyt.image_to_string(Image.fromarray(np.array(img, dtype='uint8')), cleanup=True)
     print "=====output=======\n"
     print text
-    engine.say(text)
-    engine.runAndWait()
+##    engine.say(text)
+##    engine.runAndWait()
 
     # thresh=cv2.resize(img.copy(),(0,0),fx=0.4,fy=0.4)
 
