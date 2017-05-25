@@ -3,10 +3,11 @@ import numpy as np
 from fpt import four_point_transform
 import PyTesser.pytesser as pyt
 import Image
+import requests
 ##import pyttsx
 
 ##engine=pyttsx.init()
-img=cv2.imread('Samples//id2.jpg');
+img=cv2.imread('Samples//id1.jpg');
 
 # img=cv2.resize(img.copy(),(0,0),fx=0.4,fy=0.4)
 orig=img.copy()
@@ -93,9 +94,43 @@ if screenCnt != 'False':
 
 else:
     # text=pyt.image_to_string(pyt.Image.fromarray(np.array(abc,dtype='uint8')),cleanup=True)
-    text = pyt.image_to_string(Image.fromarray(np.array(img, dtype='uint8')), cleanup=True)
+    string = pyt.image_to_string(Image.fromarray(np.array(img, dtype='uint8')), cleanup=True)
     print "=====output=======\n"
-    print text
+    print string
+
+senList = string.split('\n')
+enrol = ''
+name = ''
+for i,sen in enumerate(senList):
+    wordList = sen.split(' ')
+    for j,word in enumerate(wordList):
+        if 'Enro' in word:
+            enroll = wordList[j+1][-8:]
+            name = senList[i-1]
+
+response = requests.get('http://ssuhrid.com/checkID.php')
+
+res= str(response.content)
+response = res.split('<tr>')[1:]
+
+enrollList = []
+nameList = []
+flag = False
+for i,row in enumerate(response):
+    cols = row.split('<td>')
+    enrollList.append(cols[1][:-5])
+    nameList.append(cols[2][:-5].upper())
+
+    for i in range(0,len(enrollList)):
+    ##    print enrollList[i],enroll
+    ##    print nameList[i],name
+        if enrollList[i] in enroll and nameList[i] in name:
+            flag = True
+if flag == True:
+    print 'ID Card is valid'
+else:
+    print 'ID Card not valid'
+        
 ##    engine.say(text)
 ##    engine.runAndWait()
 
